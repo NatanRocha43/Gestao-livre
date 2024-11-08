@@ -43,48 +43,63 @@ import {
   TRANSACTION_TYPE_OPTIONS,
 } from "../_constants/transactions";
 import { DatePicker } from "./ui/date-picker";
+import { addTransaction } from "../_actions/add-transaction";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
     message: "O nome é obrigatorio.",
   }),
-  amount: z.string().trim().min(1, {
-    message: "O nome é obrigatorio.",
-  }),
+  amount: z
+    .number({
+      required_error: "O valor é obrigatório",
+    })
+    .positive({
+      message: "O valor deve ser positivo.",
+    }),
   type: z.nativeEnum(TransactionType, {
     required_error: "O tipo é obrigatorio.",
   }),
   category: z.nativeEnum(TransactionCategory, {
-    required_error: "A categoria é obrigatoria.",
+    required_error: "A categoria é obrigatório.",
   }),
-  PaymentMethod: z.nativeEnum(TransactionPaymentMethod, {
-    required_error: "A metodo de pagamento é obrigatorio.",
+  paymentMethod: z.nativeEnum(TransactionPaymentMethod, {
+    required_error: "A metodo de pagamento é obrigatório.",
   }),
   date: z.date({
-    required_error: "A data é obrigatoria.",
+    required_error: "A data é obrigatória.",
   }),
 });
 type FormSchema = z.infer<typeof formSchema>;
 const AddTransactionButton = () => {
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: "",
+      amount: 1,
       category: TransactionCategory.OTHER,
       date: new Date(),
       name: "",
-      PaymentMethod: TransactionPaymentMethod.CASH,
+      paymentMethod: TransactionPaymentMethod.CASH,
       type: TransactionType.EXPENSE,
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
-    console.log({ data });
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      await addTransaction(data);
+      setDialogIsOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <Dialog
+      open={dialogIsOpen}
       onOpenChange={(open) => {
+        setDialogIsOpen(open);
         if (!open) {
           form.reset();
         }
@@ -124,7 +139,15 @@ const AddTransactionButton = () => {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <MoneyInput placeholder="Digire o valor..." {...field} />
+                    <MoneyInput
+                      placeholder="Digire o valor..."
+                      value={field.value}
+                      onValueChange={({ floatValue }) => {
+                        field.onChange(floatValue);
+                      }}
+                      onBlur={field.onBlur}
+                      disabled={field.disabled}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -142,7 +165,7 @@ const AddTransactionButton = () => {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -186,7 +209,7 @@ const AddTransactionButton = () => {
             />
             <FormField
               control={form.control}
-              name="PaymentMethod"
+              name="paymentMethod"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Método de pagamento</FormLabel>
