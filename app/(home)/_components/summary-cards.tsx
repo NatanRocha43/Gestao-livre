@@ -11,13 +11,13 @@ interface SummaryCard {
   balance: number;
   depositsTotal: number;
   investmentsTotal: number;
-  exepensesTotal: number;
+  expensesTotal: number;
 }
 const SummaryCards = async ({
   balance,
   depositsTotal,
   investmentsTotal,
-  exepensesTotal,
+  expensesTotal,
 }: SummaryCard) => {
   return (
     <div className="space-y-6">
@@ -43,7 +43,7 @@ const SummaryCards = async ({
         <SummaryCard
           icon={<TrendingDownIcon size={16} className="text-red-500" />}
           title="Despesa"
-          amount={exepensesTotal}
+          amount={expensesTotal}
         />
       </div>
     </div>
