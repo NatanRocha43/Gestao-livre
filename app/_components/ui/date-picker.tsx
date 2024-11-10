@@ -10,11 +10,12 @@ import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { SelectSingleEventHandler } from "react-day-picker";
 
-interface DataPickerProps {
+interface DatePickerProps {
   value?: Date;
   onChange?: SelectSingleEventHandler;
 }
-export const DatePicker = ({ value, onChange }: DataPickerProps) => {
+
+export const DatePicker = ({ value, onChange }: DatePickerProps) => {
   return (
     <Popover>
       <PopoverTrigger asChild>

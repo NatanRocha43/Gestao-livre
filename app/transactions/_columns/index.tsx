@@ -17,14 +17,14 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
     header: "Nome",
   },
   {
-    accessorKey: "Type",
+    accessorKey: "type",
     header: "Tipo",
     cell: ({ row: { original: transaction } }) => (
       <TransactionTypeBadge transaction={transaction} />
     ),
   },
   {
-    accessorKey: "Category",
+    accessorKey: "category",
     header: "Categoria",
     cell: ({ row: { original: transaction } }) =>
       TRANSACTION_CATEGORY_LABELS[transaction.category],
