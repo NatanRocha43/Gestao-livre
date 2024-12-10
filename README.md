@@ -51,7 +51,6 @@ Certifique-se de ter as seguintes ferramentas instaladas:
    # ou
    yarn install
 3. Configure o arquivo .env
-  # DATABASE_URL=
   - **DATABASE_URL=**
 
   #Clerk
@@ -84,10 +83,10 @@ Abra o terminal e execute:
 
 ---
 
-O projeto local estará rodando em:
-👉 http://localhost:3000
-O Projeto em Produção está rodando em:
-👉 [https://gestao-livre.vercel.app/login](https://gestao-livre.vercel.app/login)
+**O projeto local estará rodando em:\n
+**👉 http://localhost:3000
+**O Projeto em Produção está rodando em:
+**👉 [https://gestao-livre.vercel.app/login](https://gestao-livre.vercel.app/login)
 
 **📖 Funcionalidades**
 - **🔒 Autenticação segura com Clerk**
