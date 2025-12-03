@@ -8,13 +8,18 @@ export const getDashboard = async (month: string) => {
   if (!userId) {
     throw new Error("Unauthorized");
   }
+  
+  const date = new Date();
+  const year = date.getFullYear();
+  
   const where = {
     userId,
     date: {
-      gte: new Date(`2024-${month}-01`),
-      lt: new Date(`2024-${month}-31`),
+      gte: new Date(`${year}-${month}-01`),
+      lt: new Date(`${year}-${month}-31`),
     },
   };
+  
   const depositsTotal = Number(
     (
       await db.transaction.aggregate({
