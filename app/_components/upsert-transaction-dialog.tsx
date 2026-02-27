@@ -85,7 +85,7 @@ const UpsertTransactionDialog = ({
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? {
-      amount: 50,
+      amount: 0,
       category: TransactionCategory.OTHER,
       date: new Date(),
       name: "",
@@ -117,7 +117,9 @@ const UpsertTransactionDialog = ({
       }}
     >
       <DialogTrigger asChild></DialogTrigger>
-      <DialogContent>
+      
+      {/* A MÁGICA ESTÁ AQUI: Limita a altura a 90% da tela e cria a barra de rolagem se precisar */}
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {isUpdate ? "Atualizar" : "Criar"} transação
@@ -173,7 +175,7 @@ const UpsertTransactionDialog = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="Selecione o tipo..." />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -253,7 +255,7 @@ const UpsertTransactionDialog = ({
                 </FormItem>
               )}
             />
-            <DialogFooter>
+            <DialogFooter className="gap-3 pt-4 sm:gap-0">
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   Cancelar

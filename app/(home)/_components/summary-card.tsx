@@ -18,7 +18,7 @@ const SummaryCard = ({
   userCanAddTransaction,
 }: SummaryCardProps) => {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader className="flex-row items-center gap-4">
         {icon}
         <p
@@ -27,9 +27,14 @@ const SummaryCard = ({
           {title}
         </p>
       </CardHeader>
-      <CardContent className="flex justify-between">
+      
+      <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
         <p
-          className={`font-bold ${size === "small" ? "text-2xl" : "text-4xl"}`}
+          className={`font-bold break-all sm:break-normal ${
+            size === "small" 
+              ? "text-2xl" 
+              : "text-3xl min-[375px]:text-4xl" // Fonte um pouco menor em telas abaixo de 375px
+          }`}
         >
           {Intl.NumberFormat("pt-BR", {
             style: "currency",
@@ -38,9 +43,11 @@ const SummaryCard = ({
         </p>
 
         {size === "large" && (
-          <AddTransactionButton
-            userCanAddTransaction={userCanAddTransaction ?? false}
-          />
+          <div className="w-full sm:w-auto">
+            <AddTransactionButton
+              userCanAddTransaction={userCanAddTransaction ?? false}
+            />
+          </div>
         )}
       </CardContent>
     </Card>

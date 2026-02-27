@@ -17,15 +17,26 @@ export const generateAiReport = async (month: string) => {
   if (!userHasPremiumPlan) {
     throw new Error("User has no premium plan");
   }
+  
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  // Pega o ano atual dinamicamente (2026)
+  const currentYear = new Date().getFullYear();
+  
+  // Define o início do mês selecionado e o início do próximo mês
+  const startDate = new Date(`${currentYear}-${month}-01`);
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+
   const transactions = await db.transaction.findMany({
     where: {
       date: {
-        gte: new Date(`2024-${month}-01`),
-        lt: new Date(`2024-${month}-31`),
+        gte: startDate,
+        lt: endDate,
       },
     },
   });
+
   const content = `Gere um relatório com insights sobre as minhas finanças, com dicas e orientações de como melhorar minha vida financeira. As transações estão divididas por ponto e vírgula. A estrutura de cada uma é {DATA}-{TIPO}-{VALOR}-{CATEGORIA}. São elas:
         ${transactions
           .map(
@@ -33,6 +44,7 @@ export const generateAiReport = async (month: string) => {
               `${transaction.date.toLocaleDateString("pt-BR")}-R$${transaction.amount}-${transaction.type}-${transaction.category}`,
           )
           .join(";")}`;
+          
   const completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [

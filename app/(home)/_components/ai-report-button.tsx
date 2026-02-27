@@ -31,7 +31,6 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
     try {
       setReportIsLoading(true);
       const report = await generateAiReport(month);
-      console.log({ report });
       setReport(report);
     } catch (error) {
       console.error(error);
@@ -39,7 +38,6 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
       setReportIsLoading(false);
     }
   };
-  console.log({ report });
   return (
     <>
       <Dialog>
