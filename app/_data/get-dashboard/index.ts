@@ -8,15 +8,19 @@ export const getDashboard = async (month: string) => {
   if (!userId) {
     throw new Error("Unauthorized");
   }
+  // Captura o ano atual dinamicamente
+  const currentYear = new Date().getFullYear();
   
-  const date = new Date();
-  const year = date.getFullYear();
-  
+  // Define o intervalo de busca: do primeiro dia do mês até o primeiro dia do próximo mês
+  const startDate = new Date(`${currentYear}-${month}-01`);
+  const endDate = new Date(startDate);
+  endDate.setMonth(startDate.getMonth() + 1);
+
   const where = {
     userId,
     date: {
-      gte: new Date(`${year}-${month}-01`),
-      lt: new Date(`${year}-${month}-31`),
+      gte: startDate,
+      lt: endDate,
     },
   };
   

@@ -2,7 +2,6 @@ import { db } from "../_lib/prisma";
 import { DataTable } from "../_components/ui/data-table";
 import { transactionColumns } from "./_columns";
 import AddTransactionButton from "../_components/add-transaction-button";
-import Navbar from "../_components/navbar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ScrollArea } from "../_components/ui/scroll-area";
@@ -25,21 +24,21 @@ const TransactionsPage = async () => {
 
   return (
     <>
-      <Navbar />
       <ScrollArea>
         <div className="space-y-6 overflow-hidden p-6">
-          {/* TÍTULO E BOTÃO */}
-
-          <div className="flex w-full items-center justify-between">
-            <h1 className="text-2xl font-bold">Transações</h1>
-            <AddTransactionButton
-              userCanAddTransaction={userCanAddTransaction}
-            />
+          
+          {/* TÍTULO E BOTÃO COM LAYOUT RESPONSIVO REFEITO */}
+          <div className="flex w-full flex-col items-center justify-center gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+            <h1 className="text-2xl font-bold text-center lg:text-left">Transações</h1>
+            <div className="flex w-full justify-center lg:w-auto lg:justify-end">
+              <AddTransactionButton
+                userCanAddTransaction={userCanAddTransaction}
+              />
+            </div>
           </div>
-          <DataTable
-            columns={transactionColumns}
-            data={JSON.parse(JSON.stringify(transactions))}
-          />
+          
+          {/* Mantido exatamente como você pediu */}
+          <DataTable columns={transactionColumns} data={transactions} />
         </div>
       </ScrollArea>
     </>
