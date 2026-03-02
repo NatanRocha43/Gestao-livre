@@ -74,7 +74,7 @@ const ActionCell = ({ transaction }: { transaction: Transaction }) => {
 export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "name",
-    header: "Nome",
+    header: "Descrição",
   },
   {
     accessorKey: "type",

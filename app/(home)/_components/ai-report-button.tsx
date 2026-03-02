@@ -54,7 +54,7 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
             <DialogHeader>
               <DialogTitle>Relatório com IA</DialogTitle>
             </DialogHeader>
-            
+
             {report ? (
               <ScrollArea className="max-h-[450px] w-full rounded-md border border-solid p-4">
                 <article className="prose prose-invert max-w-none prose-h3:text-primary prose-h4:text-primary prose-strong:text-primary prose-p:text-muted-foreground prose-li:text-muted-foreground">
@@ -77,23 +77,28 @@ const AiReportButton = ({ month, hasPremiumPlan }: AiReportButtonProps) => {
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="ghost" className="font-bold">
-                  Cancelar
+                  {/* Opcional: Muda o texto de Cancelar para Fechar quando o relatório aparece */}
+                  {report ? "Fechar" : "Cancelar"}
                 </Button>
               </DialogClose>
-              <Button
-                onClick={handleGenerateReportClick}
-                disabled={reportIsLoading}
-                className="font-bold"
-              >
-                {reportIsLoading ? (
-                  <>
-                    <Loader2Icon className="mr-2 animate-spin" />
-                    Gerando relatório...
-                  </>
-                ) : (
-                  "Gerar relatório"
-                )}
-              </Button>
+
+              {/* O SEGREDO AQUI: O botão só renderiza se a variável 'report' estiver vazia */}
+              {!report && (
+                <Button
+                  onClick={handleGenerateReportClick}
+                  disabled={reportIsLoading}
+                  className="font-bold"
+                >
+                  {reportIsLoading ? (
+                    <>
+                      <Loader2Icon className="mr-2 animate-spin" />
+                      Gerando relatório...
+                    </>
+                  ) : (
+                    "Gerar relatório"
+                  )}
+                </Button>
+              )}
             </DialogFooter>
           </>
         ) : (

@@ -51,7 +51,7 @@ interface UpsertTransactionDialogProps {
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
-    message: "O nome é obrigatório.",
+    message: "A descrição é obrigatória.",
   }),
   amount: z
     .number({
@@ -134,9 +134,9 @@ const UpsertTransactionDialog = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Input placeholder="Digite o nome..." {...field} />
+                    <Input placeholder="Digite a descrição..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -16,8 +16,13 @@ const Navbar = () => {
   return (
     <nav className="relative flex items-center justify-between border-b border-solid bg-background px-6 py-4 lg:px-8">
       <div className="flex items-center gap-10">
-        <Image src="/logo.svg" width={173} height={39} alt="Finance AI" />
-        
+        <Link
+          href="/"
+        >
+          <Image src="/logo.svg" width={173} height={39} alt="Finance AI" />
+        </Link>
+
+
         {/* Links visíveis apenas em Desktop (1024px+) */}
         <div className="hidden lg:flex items-center gap-10">
           <Link
@@ -50,8 +55,8 @@ const Navbar = () => {
         </div>
 
         {/* Botão de Hambúrguer (até 1023px) */}
-        <button 
-          onClick={toggleMenu} 
+        <button
+          onClick={toggleMenu}
           className="block lg:hidden p-2 text-muted-foreground transition-colors hover:text-primary"
         >
           {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -59,12 +64,11 @@ const Navbar = () => {
       </div>
 
       {/* Menu Mobile com Animação */}
-      <div 
-        className={`absolute left-0 top-full z-50 flex w-full flex-col items-center gap-6 border-b border-solid bg-background pb-6 pt-4 shadow-lg transition-all duration-300 ease-in-out lg:hidden ${
-          isMenuOpen 
-            ? "visible translate-y-0 opacity-100" 
+      <div
+        className={`absolute left-0 top-full z-50 flex w-full flex-col items-center gap-6 border-b border-solid bg-background pb-6 pt-4 shadow-lg transition-all duration-300 ease-in-out lg:hidden ${isMenuOpen
+            ? "visible translate-y-0 opacity-100"
             : "invisible -translate-y-4 opacity-0"
-        }`}
+          }`}
       >
         <Link href="/" onClick={toggleMenu} className={pathname === "/" ? "font-bold text-primary text-lg" : "text-muted-foreground text-lg"}>
           Dashboard
