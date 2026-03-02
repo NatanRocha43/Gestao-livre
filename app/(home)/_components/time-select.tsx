@@ -8,7 +8,8 @@ import {
   SelectValue,
 } from "@/app/_components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useTransition } from "react";
+import { Loader2Icon } from "lucide-react"; // Ajuste o caminho do seu ícone se precisar
 
 const MONTH_OPTIONS = [
   { value: "01", label: "Janeiro" },
@@ -29,42 +30,41 @@ const TimeSelect = () => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
   
-  // Estados para controlar a hidratação e o mês selecionado
-  const [isMounted, setIsMounted] = useState(false);
-  const [month, setMonth] = useState("");
+  // 1. Hook mágico do React para controlar o carregamento de transições
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    // Isso só roda no navegador do usuário, garantindo sincronia perfeita
-    setIsMounted(true);
-    
-    // Pega o mês da URL. Se não tiver, pega o mês atual do sistema
-    const urlMonth = searchParams.get("month");
-    const currentSystemMonth = String(new Date().getMonth() + 1).padStart(2, "0");
-    
-    setMonth(urlMonth || currentSystemMonth);
-  }, [searchParams]);
+  const urlMonth = searchParams.get("month");
+  const currentMonth = urlMonth 
+    ? urlMonth.padStart(2, "0") 
+    : String(new Date().getMonth() + 1).padStart(2, "0");
 
   const handleMonthChange = (selectedMonth: string) => {
-    setMonth(selectedMonth); // Atualiza a tela imediatamente
-    push(`/?month=${selectedMonth}`); // Atualiza a URL
+    // 2. Envolvemos a mudança de rota no startTransition
+    startTransition(() => {
+      push(`/?month=${selectedMonth}`);
+    });
   };
-
-  // Se ainda estiver no servidor, renderiza um "botão falso" para evitar o erro de hidratação
-  if (!isMounted) {
-    return (
-      <div className="h-10 w-full sm:w-[150px] rounded-full border border-solid bg-transparent"></div>
-    );
-  }
 
   return (
     <Select 
       onValueChange={handleMonthChange} 
-      value={month}
+      defaultValue={currentMonth} 
+      key={currentMonth}
+      // Opcional: Desabilita o select enquanto carrega para evitar cliques duplos
+      disabled={isPending} 
     >
       <SelectTrigger className="w-full sm:w-[150px] rounded-full">
-        {/* Agora o Shadcn vai conseguir encontrar o nome sozinho através do 'value' */}
-        <SelectValue placeholder="Mês" />
+        {/* 3. Lógica visual: Mostra o spinner se estiver carregando, senão mostra o valor */}
+        {isPending ? (
+          <div className="flex items-center gap-2">
+            <Loader2Icon className="h-4 w-4 animate-spin text-muted-foreground" />
+            <span className="text-muted-foreground">Buscando...</span>
+          </div>
+        ) : (
+          <SelectValue placeholder="Mês" />
+        )}
       </SelectTrigger>
+      
       <SelectContent>
         {MONTH_OPTIONS.map((option) => (
           <SelectItem key={option.value} value={option.value}>
