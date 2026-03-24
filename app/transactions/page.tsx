@@ -1,6 +1,6 @@
 import { db } from "../_lib/prisma";
-import { DataTable } from "../_components/ui/data-table";
 import { transactionColumns } from "./_columns";
+import { TypeFilterTable } from "./_components/type-filter-table";
 import AddTransactionButton from "../_components/add-transaction-button";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -42,8 +42,8 @@ const TransactionsPage = async () => {
             </div>
           </div>
           
-          {/* Mantido exatamente como você pediu */}
-          <DataTable columns={transactionColumns} data={transactions} />
+          {/* Tabela Interativa de Filtros Dinâmicos */}
+          <TypeFilterTable transactions={transactions} />
         </div>
       </ScrollArea>
     </>
