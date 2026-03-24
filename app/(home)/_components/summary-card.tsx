@@ -21,7 +21,7 @@ const SummaryCard = ({
   size = "small",
   userCanAddTransaction,
 }: SummaryCardProps) => {
-  const { isVisible, toggleVisibility } = usePrivacy();
+  const { isVisible } = usePrivacy();
 
   return (
     <Card className="overflow-hidden">
