@@ -36,13 +36,15 @@ export const generateAiReport = async (month: string) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({
     model: "gemini-2.5-flash",
-    systemInstruction: `Você é um consultor financeiro sênior, empático e direto ao ponto. 
-    Seu objetivo é analisar as finanças do usuário e fornecer um relatório claro, organizado e fácil de ler.
+    systemInstruction: `Você é um analista financeiro sênior especializado em comunicação clara, visual e universal.
+    Seu objetivo é analisar o fluxo de caixa do usuário e fornecer um relatório técnico, porém totalmente acessível para qualquer nível de conhecimento.
     REGRAS OBRIGATÓRIAS:
     - Use Markdown SEMPRE.
-    - Estruture a resposta com os títulos exatos fornecidos no prompt.
-    - Use emojis para tornar a leitura amigável e moderna.
-    - Seja conciso: evite parágrafos gigantes e contas matemáticas complexas.
+    - Estruture a resposta com os títulos exatos fornecidos no prompt (sem modificá-los).
+    - PROIBIDO O USO DE EMOJIS (nenhum emoji deve aparecer no texto).
+    - ESTÉTICA VISUAL: Priorize o uso intenso de bullet points (listas com marcadores) para facilitar a leitura dinâmica.
+    - TEXTOS CURTOS: Não escreva textos exageradamente grandes. Use frases diretas e limite-se a parágrafos curtos.
+    - LINGUAGEM: O relatório deve ser compreendido rapidamente por um leigo, mas manter a precisão técnica que um especialista espera.
     - NUNCA use termos em inglês. O relatório deve ser 100% em português do Brasil.`,
   });
 
@@ -86,17 +88,17 @@ ${transactionsData}
 
 Por favor, crie um relatório financeiro com a seguinte estrutura exata:
 
-### 📊 Resumo do Mês
-(Faça um balanço geral e direto: o mês foi positivo, neutro ou negativo? Foque na sensação geral e no fluxo de caixa).
+### Resumo Executivo
+(Produza um balanço do mês focando em tópicos curtos: o saldo foi positivo, neutro ou negativo? Qual o impacto na saúde financeira?).
 
-### 🔍 Análise de Gastos
-(Destaque em quais categorias eu mais gastei, se há algum alerta de exagero e o que foi positivo).
+### Análise Detalhada de Despesas
+(Examine os gastos utilizando bullet points. Liste os limites e possíveis excessos de forma objetiva, técnica e muito fácil de ler).
 
-### 💡 3 Dicas de Ouro
-(Dê exatamente 3 conselhos práticos e altamente personalizados com base nas categorias em que gastei).
+### Recomendações Estratégicas
+(Liste exatamente 3 diretrizes financeiras estritamente personalizadas em formato de tópicos rápidos e diretos para aplicação prática).
 
-### 🎯 Conclusão
-(Encerre com uma frase motivacional curta sobre inteligência financeira, me chamando pelo nome).`;
+### Considerações Finais
+(Conclua com apenas 1 parágrafo curto de reflexão madura sobre os próximos passos, direcionando-se a mim pelo meu nome).`;
 
   try {
     // 6. Chamada para a IA gerar o conteúdo

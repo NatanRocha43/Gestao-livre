@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { CheckCircleIcon } from "lucide-react";
 import {
   TRANSACTION_CATEGORY_OPTIONS,
   TRANSACTION_PAYMENT_METHOD_OPTIONS,
@@ -41,6 +42,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { upsertTransaction } from "../_actions/upsert-transaction";
+import { toast } from "sonner";
 
 interface UpsertTransactionDialogProps {
   isOpen: boolean;
@@ -100,8 +102,17 @@ const UpsertTransactionDialog = ({
       await upsertTransaction({ ...data, id: transactionId });
       setIsOpen(false);
       form.reset();
+      
+      if (isUpdate) {
+        toast.success("Transação atualizada com sucesso!");
+      } else {
+        toast.success("Transação cadastrada com sucesso!", {
+          icon: <CheckCircleIcon className="text-green-500" />
+        });
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Ocorreu um erro ao salvar a transação.");
     }
   };
 

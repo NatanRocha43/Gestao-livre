@@ -13,6 +13,8 @@ import {
 } from "@/app/_constants/transactions";
 import EditTransactionButton from "../_components/edit-transaction-button";
 import { deleteTransaction } from "../_components/delete-transaction";
+import { toast } from "sonner";
+import { formatCurrency } from "@/app/_utils/currency";
 
 // 2. CRIAMOS UM MINI-COMPONENTE SÓ PARA AS AÇÕES
 // Isso permite que cada linha tenha seu próprio estado de "Modal Aberto/Fechado"
@@ -20,8 +22,16 @@ const ActionCell = ({ transaction }: { transaction: Transaction }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = async () => {
-    await deleteTransaction(transaction.id);
-    setIsModalOpen(false); // Fecha o modal depois de deletar
+    try {
+      await deleteTransaction(transaction.id);
+      setIsModalOpen(false); // Fecha o modal depois de deletar
+      toast("Transação excluída com sucesso!", {
+        icon: <TrashIcon className="text-red-500" />
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Ocorreu um erro ao excluir transação.");
+    }
   };
 
   return (
@@ -77,10 +87,7 @@ const AmountCell = ({ amount }: { amount: number }) => {
   return (
     <span className={!isVisible ? "text-muted-foreground" : ""}>
       {isVisible
-        ? Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)
+        ? formatCurrency(amount)
         : "R$ •••••"}
     </span>
   );

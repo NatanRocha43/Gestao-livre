@@ -6,6 +6,7 @@ import { PrivacyProvider } from "./_contexts/privacy-context";
 import { ptBR } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
 import Navbar from "./_components/navbar"; // 1. Importe o Navbar aqui
+import { Toaster } from "./_components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,7 +36,7 @@ export default function RootLayout({
           </PrivacyProvider>
         </ClerkProvider>
 
-        {/* <Toaster /> */}
+        <Toaster />
       </body>
     </html>
   );

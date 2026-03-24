@@ -4,6 +4,7 @@ import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { ReactNode } from "react";
 import { usePrivacy } from "@/app/_contexts/privacy-context";
+import { formatCurrency } from "@/app/_utils/currency";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -42,10 +43,7 @@ const SummaryCard = ({
           }`}
         >
           {isVisible 
-            ? Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(amount)
+            ? formatCurrency(amount)
             : "R$ •••••"}
         </p>
 

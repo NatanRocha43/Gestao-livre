@@ -3,13 +3,15 @@ import { redirect } from "next/navigation";
 import SummaryCards from "./_components/summary-cards";
 import TimeSelect from "./_components/time-select";
 import { isMatch } from "date-fns";
-import TransactionsPieChart from "./_components/transactions-pie-chart";
+import dynamic from "next/dynamic";
 import { getDashboard } from "../_data/get-dashboard";
 import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
 import { PrivacyToggleButton } from "../_components/privacy-toggle-button";
+
+const TransactionsPieChart = dynamic(() => import("./_components/transactions-pie-chart"), { ssr: false });
 
 interface HomeProps {
   searchParams: {
