@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ptBR } from "@clerk/localizations";
 import { dark } from "@clerk/themes";
 import Navbar from "./_components/navbar"; // 1. Importe o Navbar aqui
 
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${inter.className} dark antialiased`}>
-        <ClerkProvider appearance={{ baseTheme: dark }}>
+        <ClerkProvider appearance={{ baseTheme: dark }} localization={ptBR as any}>
           
           {/* 2. COLOQUE O NAVBAR AQUI */}
           <Navbar /> 
