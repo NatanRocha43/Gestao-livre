@@ -21,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${inter.className} dark antialiased`}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <ClerkProvider appearance={{ baseTheme: dark }} localization={ptBR as any}>
           
           {/* 2. COLOQUE O NAVBAR AQUI */}
