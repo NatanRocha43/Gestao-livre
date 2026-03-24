@@ -56,6 +56,7 @@ const formSchema = z.object({
   amount: z
     .number({
       required_error: "O valor é obrigatório.",
+      invalid_type_error: "O valor é obrigatório.",
     })
     .positive({
       message: "O valor deve ser positivo.",
@@ -153,7 +154,7 @@ const UpsertTransactionDialog = ({
                       placeholder="Digite o valor..."
                       value={field.value}
                       onValueChange={({ floatValue }) =>
-                        field.onChange(floatValue)
+                        field.onChange(floatValue === undefined ? "" : floatValue)
                       }
                       onBlur={field.onBlur}
                       disabled={field.disabled}
