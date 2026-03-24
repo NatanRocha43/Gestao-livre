@@ -23,6 +23,13 @@ const SummaryCard = ({
 }: SummaryCardProps) => {
   const { isVisible } = usePrivacy();
 
+  const getBalanceColor = () => {
+    if (size !== "large") return "";
+    if (amount > 0) return "text-primary";
+    if (amount < 0) return "text-red-500";
+    return "";
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex-row items-center gap-4">
@@ -40,7 +47,7 @@ const SummaryCard = ({
             size === "small" 
               ? "text-2xl" 
               : "text-3xl min-[375px]:text-4xl" // Fonte um pouco menor em telas abaixo de 375px
-          }`}
+          } ${isVisible ? getBalanceColor() : "text-muted-foreground"}`}
         >
           {isVisible 
             ? formatCurrency(amount)
