@@ -16,28 +16,36 @@ const SubscriptionPage = async () => {
   const hasPremiumPlan = user.publicMetadata.subscriptionPlan == "premium";
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Assinatura</h1>
+    <div className="p-6 pb-20 space-y-6">
+      <div className="mx-auto mb-12 flex max-w-[800px] flex-col items-center justify-center pt-8 text-center space-y-4">
+        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+          {hasPremiumPlan ? "Você é um usuário Premium!" : "Faça o upgrade das suas finanças"}
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          {hasPremiumPlan 
+            ? "Sua assinatura está ativa. Aproveite o limite ilimitado de transações ao lado da poderosa Inteligência Artificial." 
+            : "Desbloqueie o poder da Inteligência Artificial e tenha o controle total sobre a gestão do seu patrimônio com relatórios avançados."}
+        </p>
+      </div>
       
-      <div className="flex flex-col gap-6 lg:flex-row">
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-center gap-8 lg:flex-row lg:items-stretch">
         
         {/* PLANO BÁSICO */}
-        <Card className="w-full lg:max-w-[450px]">
-          <CardHeader className="flex flex-col items-center border-b border-solid py-8 gap-4">
-            {/* Tiramos o absolute para o Badge não atropelar o texto */}
+        <Card className="w-full lg:w-[450px] relative border-border flex flex-col">
+          <CardHeader className="flex flex-col items-center border-b border-solid py-8 gap-4 relative">
             {!hasPremiumPlan && (
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
-                Ativo
+              <Badge className="bg-muted text-muted-foreground hover:bg-muted">
+                Seu Plano Atual
               </Badge>
             )}
-            <h2 className="text-2xl font-semibold">Plano básico</h2>
+            <h2 className="text-2xl font-semibold">Plano Básico</h2>
             <div className="flex items-baseline justify-center gap-1">
               <span className="text-3xl font-bold">R$</span>
               <span className="text-6xl font-bold">0</span>
               <span className="text-xl text-muted-foreground">/Mês</span>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6 py-8">
+          <CardContent className="space-y-6 py-8 flex flex-col flex-1">
             <div className="flex items-center gap-2">
               <CheckIcon className="text-primary" />
               <p>
@@ -46,37 +54,47 @@ const SubscriptionPage = async () => {
             </div>
             <div className="flex items-center gap-3 text-muted-foreground">
               <XIcon className="h-4 w-4" />
-              <p>Relatório de IA</p>
+              <p>Relatório de Inteligência Artificial</p>
             </div>
           </CardContent>
         </Card>
 
         {/* PLANO PREMIUM */}
-        <Card className="w-full lg:max-w-[450px]">
-          <CardHeader className="flex flex-col items-center border-b border-solid py-8 gap-4">
-            {hasPremiumPlan && (
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
-                Ativo
+        <Card className="w-full lg:w-[450px] relative border-primary border-2 shadow-2xl shadow-primary/20 flex flex-col overflow-hidden">
+          {/* Subtle Glow Background */}
+          <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+          
+          <CardHeader className="flex flex-col items-center border-b border-solid py-8 gap-4 relative z-10">
+            {hasPremiumPlan ? (
+              <Badge className="bg-primary text-primary-foreground hover:bg-primary">
+                Assinatura Ativa
+              </Badge>
+            ) : (
+              <Badge className="bg-primary text-primary-foreground hover:bg-primary animate-pulse shadow-md shadow-primary/30">
+                💡 Recomendado
               </Badge>
             )}
-            <h2 className="text-2xl font-semibold">Plano Premium</h2>
+            <h2 className="text-2xl font-semibold text-primary">Finance AI Premium</h2>
             <div className="flex items-baseline justify-center gap-1">
               <span className="text-3xl font-bold">R$</span>
               <span className="text-6xl font-bold">19</span>
               <span className="text-xl text-muted-foreground">/Mês</span>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6 py-8">
-            <div className="flex items-center gap-2">
-              <CheckIcon className="text-primary" />
-              <p>Transações ilimitadas</p>
+          <CardContent className="space-y-6 py-8 flex flex-col justify-between flex-1 relative z-10">
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 font-medium">
+                <CheckIcon className="text-primary" />
+                <p>Transações totalmente ilimitadas</p>
+              </div>
+              <div className="flex items-center gap-3 font-medium">
+                <CheckIcon className="text-primary" />
+                <p>Relatório completo com IA (Gemini)</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <CheckIcon className="text-primary" />
-              <p>Relatório de IA</p>
+            <div className="mt-8 pt-4">
+              <AcquirePlanButton />
             </div>
-            {/* O botão agora vai se comportar bem no mobile */}
-            <AcquirePlanButton />
           </CardContent>
         </Card>
       </div>
