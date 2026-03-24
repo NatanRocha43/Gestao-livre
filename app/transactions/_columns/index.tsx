@@ -6,6 +6,7 @@ import TransactionTypeBadge from "../_components/type-badge";
 import { Button } from "@/app/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react"; // 1. Importamos o useState
+import { usePrivacy } from "@/app/_contexts/privacy-context";
 import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_LABELS,
@@ -70,6 +71,21 @@ const ActionCell = ({ transaction }: { transaction: Transaction }) => {
   );
 };
 
+const AmountCell = ({ amount }: { amount: number }) => {
+  const { isVisible } = usePrivacy();
+
+  return (
+    <span className={!isVisible ? "text-muted-foreground" : ""}>
+      {isVisible
+        ? Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(amount)
+        : "R$ •••••"}
+    </span>
+  );
+};
+
 // 4. A SUAS COLUNAS CONTINUAM NORMAIS
 export const transactionColumns: ColumnDef<Transaction>[] = [
   {
@@ -108,11 +124,9 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "amount",
     header: "Valor",
-    cell: ({ row: { original: transaction } }) =>
-      new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(Number(transaction.amount)),
+    cell: ({ row: { original: transaction } }) => (
+      <AmountCell amount={Number(transaction.amount)} />
+    ),
   },
   {
     accessorKey: "actions",

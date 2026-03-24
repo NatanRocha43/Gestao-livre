@@ -9,6 +9,7 @@ import ExpensesPerCategory from "./_components/expenses-per-category";
 import LastTransactions from "./_components/last-transactions";
 import { canUserAddTransaction } from "../_data/can-user-add-transaction";
 import AiReportButton from "./_components/ai-report-button";
+import { PrivacyToggleButton } from "../_components/privacy-toggle-button";
 
 interface HomeProps {
   searchParams: {
@@ -35,7 +36,11 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
     <>
       <div className="flex flex-col space-y-6 p-6 lg:h-full ">
         <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <div className="flex items-center gap-3">
+            
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <PrivacyToggleButton />
+          </div>
           <div className="flex w-full flex-col gap-3 min-[375px]:w-auto min-[375px]:flex-row items-center">
             <AiReportButton month={month} hasPremiumPlan={user.publicMetadata.subscriptionPlan === "premium"} />
             <TimeSelect />

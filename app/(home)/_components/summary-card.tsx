@@ -1,6 +1,9 @@
+"use client";
+
 import AddTransactionButton from "@/app/_components/add-transaction-button";
 import { Card, CardContent, CardHeader } from "@/app/_components/ui/card";
 import { ReactNode } from "react";
+import { usePrivacy } from "@/app/_contexts/privacy-context";
 
 interface SummaryCardProps {
   icon: ReactNode;
@@ -17,6 +20,8 @@ const SummaryCard = ({
   size = "small",
   userCanAddTransaction,
 }: SummaryCardProps) => {
+  const { isVisible, toggleVisibility } = usePrivacy();
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="flex-row items-center gap-4">
@@ -36,10 +41,12 @@ const SummaryCard = ({
               : "text-3xl min-[375px]:text-4xl" // Fonte um pouco menor em telas abaixo de 375px
           }`}
         >
-          {Intl.NumberFormat("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          }).format(amount)}
+          {isVisible 
+            ? Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(amount)
+            : "R$ •••••"}
         </p>
 
         {size === "large" && (

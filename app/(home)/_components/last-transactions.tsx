@@ -1,5 +1,8 @@
+"use client";
+
 import { Button } from "@/app/_components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/app/_components/ui/card";
+import { usePrivacy } from "@/app/_contexts/privacy-context";
 import { ScrollArea } from "@/app/_components/ui/scroll-area";
 import { TRANSACTION_PAYMENT_METHOD_ICONS } from "@/app/_constants/transactions";
 import { formatCurrency } from "@/app/_utils/currency";
@@ -12,6 +15,8 @@ interface LastTransactionsProps {
 }
 
 const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
+  const { isVisible } = usePrivacy();
+
   const getAmountColor = (transaction: Transaction) => {
     if (transaction.type === TransactionType.EXPENSE) {
       return "text-red-500";
@@ -61,9 +66,15 @@ const LastTransactions = ({ lastTransactions }: LastTransactionsProps) => {
                 </p>
               </div>
             </div>
-            <p className={`text-sm font-bold ${getAmountColor(transaction)}`}>
-              {getAmountPrefix(transaction)}
-              {formatCurrency(Number(transaction.amount))}
+            <p className={`text-sm font-bold ${isVisible ? getAmountColor(transaction) : "text-muted-foreground"}`}>
+              {isVisible ? (
+                <>
+                  {getAmountPrefix(transaction)}
+                  {formatCurrency(Number(transaction.amount))}
+                </>
+              ) : (
+                "R$ •••••"
+              )}
             </p>
           </div>
         ))}
