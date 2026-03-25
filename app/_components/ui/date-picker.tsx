@@ -16,8 +16,12 @@ interface DatePickerProps {
 }
 
 export const DatePicker = ({ value, onChange }: DatePickerProps) => {
+  // 1. Criamos um estado para controlar manualmente se o Popover está aberto ou fechado
+  const [isOpen, setIsOpen] = React.useState(false);
+
   return (
-    <Popover>
+    // 2. Passamos o estado para o Popover usando open e onOpenChange
+    <Popover open={isOpen} onOpenChange={setIsOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -38,11 +42,20 @@ export const DatePicker = ({ value, onChange }: DatePickerProps) => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      
+      <PopoverContent className="w-auto p-0 z-[9999]">
         <Calendar
           mode="single"
           selected={value}
-          onSelect={onChange}
+          // 3. Interceptamos o evento de seleção para fechar o Popover
+          onSelect={(date, selectedDay, activeModifiers, e) => {
+            // Executa a função onChange original (se ela foi passada)
+            if (onChange) {
+              onChange(date, selectedDay, activeModifiers, e);
+            }
+            // Fecha o calendário!
+            setIsOpen(false);
+          }}
           initialFocus
           locale={ptBR}
         />
