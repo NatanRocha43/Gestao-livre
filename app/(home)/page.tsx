@@ -34,26 +34,15 @@ const Home = async ({ searchParams: { month } }: HomeProps) => {
   const userCanAddTransaction = await canUserAddTransaction();
   const user = await clerkClient().users.getUser(userId);
 
-  // Lógica de Saudação Interativa (Lê a hora do sistema do Node/Servidor)
-  const hour = new Date().getHours();
-  let greeting = "Boa noite";
-  let icon = "🌙";
-  if (hour >= 6 && hour < 12) {
-    greeting = "Bom dia";
-    icon = "☀️";
-  } else if (hour >= 12 && hour < 18) {
-    greeting = "Boa tarde";
-    icon = "☕";
-  }
 
   return (
     <>
       <div className="flex flex-col space-y-6 p-6 lg:h-full ">
         <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
           <div className="flex items-center gap-3">
-            
+          
             <h1 className="text-2xl font-bold">
-              {icon} {greeting}, {user.firstName || "Visitante"}!
+              Bem-vindo(a), {user.firstName || "Visitante"}!
             </h1>
             <PrivacyToggleButton />
           </div>
