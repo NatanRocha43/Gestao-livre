@@ -8,6 +8,7 @@ export const getDashboard = async (month: string) => {
   if (!userId) {
     throw new Error("Unauthorized");
   }
+  
   // Captura o ano atual dinamicamente
   const currentYear = new Date().getFullYear();
   
@@ -24,13 +25,14 @@ export const getDashboard = async (month: string) => {
     },
   };
   
+  // Adicionado o '|| 0' ao final para garantir que retorne 0 ao invés de null/undefined
   const depositsTotal = Number(
     (
       await db.transaction.aggregate({
         where: { ...where, type: "DEPOSIT" },
         _sum: { amount: true },
       })
-    )?._sum?.amount,
+    )?._sum?.amount || 0
   );
   const investmentsTotal = Number(
     (
@@ -38,7 +40,7 @@ export const getDashboard = async (month: string) => {
         where: { ...where, type: "INVESTMENT" },
         _sum: { amount: true },
       })
-    )?._sum?.amount,
+    )?._sum?.amount || 0
   );
   const expensesTotal = Number(
     (
@@ -46,28 +48,33 @@ export const getDashboard = async (month: string) => {
         where: { ...where, type: "EXPENSE" },
         _sum: { amount: true },
       })
-    )?._sum?.amount,
+    )?._sum?.amount || 0
   );
+  
   const balance = depositsTotal - investmentsTotal - expensesTotal;
+  
   const transactionsTotal = Number(
     (
       await db.transaction.aggregate({
         where,
         _sum: { amount: true },
       })
-    )._sum.amount,
+    )?._sum?.amount || 0
   );
+
+  // CORREÇÃO DO NaN: Condição para evitar a divisão por zero
   const typesPercentage: TransactionPercentagePerType = {
-    [TransactionType.DEPOSIT]: Math.round(
-      (Number(depositsTotal || 0) / Number(transactionsTotal)) * 100,
-    ),
-    [TransactionType.EXPENSE]: Math.round(
-      (Number(expensesTotal || 0) / Number(transactionsTotal)) * 100,
-    ),
-    [TransactionType.INVESTMENT]: Math.round(
-      (Number(investmentsTotal || 0) / Number(transactionsTotal)) * 100,
-    ),
+    [TransactionType.DEPOSIT]: transactionsTotal > 0 
+      ? Math.round((depositsTotal / transactionsTotal) * 100) 
+      : 0,
+    [TransactionType.EXPENSE]: transactionsTotal > 0 
+      ? Math.round((expensesTotal / transactionsTotal) * 100) 
+      : 0,
+    [TransactionType.INVESTMENT]: transactionsTotal > 0 
+      ? Math.round((investmentsTotal / transactionsTotal) * 100) 
+      : 0,
   };
+
   const totalExpensePerCategory: TotalExpensePerCategory[] = (
     await db.transaction.groupBy({
       by: ["category"],
@@ -79,18 +86,24 @@ export const getDashboard = async (month: string) => {
         amount: true,
       },
     })
-  ).map((category) => ({
-    category: category.category,
-    totalAmount: Number(category._sum.amount),
-    percentageOfTotal: Math.round(
-      (Number(category._sum.amount) / Number(expensesTotal)) * 100,
-    ),
-  }));
+  ).map((category) => {
+    const amount = Number(category._sum.amount || 0);
+    return {
+      category: category.category,
+      totalAmount: amount,
+      // CORREÇÃO DO NaN: Condição para evitar divisão por zero nas categorias
+      percentageOfTotal: expensesTotal > 0 
+        ? Math.round((amount / expensesTotal) * 100) 
+        : 0,
+    };
+  });
+
   const lastTransactions = await db.transaction.findMany({
     where,
     orderBy: { date: "desc" },
     take: 15,
   });
+
   return {
     balance,
     depositsTotal,
