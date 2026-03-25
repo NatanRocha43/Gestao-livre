@@ -23,7 +23,7 @@ const SubscriptionPage = async () => {
         </h1>
         <p className="text-lg text-muted-foreground">
           {hasPremiumPlan 
-            ? "Sua assinatura está ativa. Aproveite o limite ilimitado de transações ao lado da poderosa Inteligência Artificial." 
+            ? "Sua assinatura está ativa. Aproveite as transações ilimitadas ao lado da poderosa Inteligência Artificial." 
             : "Desbloqueie o poder da Inteligência Artificial e tenha o controle total sobre a gestão do seu patrimônio com relatórios avançados."}
         </p>
       </div>
