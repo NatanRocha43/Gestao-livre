@@ -6,7 +6,7 @@ const HomeLoading = () => {
       {/* CABEÇALHO */}
       <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between mb-2">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <div className="h-8 w-[200px] sm:w-[250px] rounded-md bg-muted/60 animate-pulse border border-solid border-border" />
           {/* Skeleton mock do PrivacyToggleButton */}
           <div className="h-8 w-8 rounded-md bg-muted/60 animate-pulse border border-solid border-border" />
         </div>
