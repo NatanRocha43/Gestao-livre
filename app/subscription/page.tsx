@@ -21,7 +21,7 @@ const SubscriptionPage = async () => {
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
           {hasPremiumPlan ? "Você é um usuário Premium!" : "Faça o upgrade das suas finanças"}
         </h1>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-lg text-muted-foreground"> 
           {hasPremiumPlan 
             ? "Sua assinatura está ativa. Aproveite as transações ilimitadas ao lado da poderosa Inteligência Artificial." 
             : "Desbloqueie o poder da Inteligência Artificial e tenha o controle total sobre a gestão do seu patrimônio com relatórios avançados."}
