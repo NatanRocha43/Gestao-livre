@@ -137,10 +137,11 @@ Por favor, crie um relatório financeiro com a seguinte estrutura exata:
         console.log(`✅ Relatório gerado com SUCESSO pelo modelo: ${modelName}`);
         return text;
       }
-    } catch (error: any) {
+    } catch (error) {
+      const err = error as Error;
       console.warn(
         `⚠️ Erro no modelo ${modelName}:`,
-        error?.message || "Serviço indisponível ou limite alcançado"
+        err?.message || "Serviço indisponível ou limite alcançado"
       );
     }
   }
