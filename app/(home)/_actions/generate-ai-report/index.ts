@@ -8,10 +8,10 @@ import {
   TRANSACTION_CATEGORY_LABELS,
   TRANSACTION_PAYMENT_METHOD_LABELS,
   TRANSACTION_TYPE_OPTIONS,
-} from "@/app/_constants/transactions"; // Ajuste este caminho se necessário
+} from "@/app/_constants/transactions";
 
 export const generateAiReport = async (month: string) => {
-  // 1. Validações Iniciais
+  // 1. Validação
   if (!isMatch(month, "MM")) {
     throw new Error("Mês inválido. Use o formato MM (ex: 03)");
   }
@@ -21,34 +21,38 @@ export const generateAiReport = async (month: string) => {
     throw new Error("Usuário não autenticado");
   }
 
-  // 2. Busca os dados do usuário no Clerk
+  // 2. Buscar usuário
   const user = await clerkClient().users.getUser(userId);
-  const userHasPremiumPlan = user.publicMetadata.subscriptionPlan === "premium";
+  const userHasPremiumPlan =
+    user.publicMetadata.subscriptionPlan === "premium";
 
   if (!userHasPremiumPlan) {
-    throw new Error("Apenas usuários Premium podem gerar relatórios com IA.");
+    throw new Error(
+      "Apenas usuários Premium podem gerar relatórios com IA."
+    );
   }
 
-  // Pega o primeiro nome do usuário para personalizar o relatório
   const firstName = user.firstName || "usuário";
 
-  // 3. Configuração do Gemini
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
-    systemInstruction: `Você é um analista financeiro sênior especializado em comunicação clara, visual e universal.
-    Seu objetivo é analisar o fluxo de caixa do usuário e fornecer um relatório técnico, porém totalmente acessível para qualquer nível de conhecimento.
-    REGRAS OBRIGATÓRIAS:
-    - Use Markdown SEMPRE.
-    - Estruture a resposta com os títulos exatos fornecidos no prompt (sem modificá-los).
-    - PROIBIDO O USO DE EMOJIS (nenhum emoji deve aparecer no texto).
-    - ESTÉTICA VISUAL: Priorize o uso intenso de bullet points (listas com marcadores) para facilitar a leitura dinâmica.
-    - TEXTOS CURTOS: Não escreva textos exageradamente grandes. Use frases diretas e limite-se a parágrafos curtos.
-    - LINGUAGEM: O relatório deve ser compreendido rapidamente por um leigo, mas manter a precisão técnica que um especialista espera.
-    - NUNCA use termos em inglês. O relatório deve ser 100% em português do Brasil.`,
-  });
+  // 3. Configuração Gemini
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY não configurada.");
+  }
 
-  // 4. Busca as transações no Banco de Dados
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  const systemInstruction = `Você é um consultor financeiro pessoal de elite, focado em ajudar indivíduos a organizar as finanças, otimizar orçamento e multiplicar investimentos.
+Sua análise deve ser cirúrgica, debruçada sobre os números fornecidos e orientada para resultados práticos. Abandone dicas genéricas e foque nos hábitos reais do usuário.
+
+REGRAS OBRIGATÓRIAS:
+- Formatação em MARKDOWN rica e amigável (use negritos, itálicos e separadores visuais).
+- Obedeça EXATAMENTE os títulos e a ordem exigidos no prompt (nada a mais, nada a menos).
+- PROIBIDO o uso de emojis. Mantenha a interface limpa e sobriedade técnica.
+- Priorize a leitura dinâmica: apoie-se fortemente em bullet points.
+- O tom da conversa deve ser direto, motivador, empático, mas profundamente realista (se a pessoa estiver gastando demais em supérfluos, alerte!).
+- Resposta fluida 100% em português do Brasil (PT-BR).`;
+
+  // 4. Buscar transações
   const currentYear = new Date().getFullYear();
   const startDate = new Date(`${currentYear}-${month}-01`);
   const endDate = new Date(startDate);
@@ -71,14 +75,23 @@ export const generateAiReport = async (month: string) => {
     return "Você ainda não possui transações registradas para este mês.";
   }
 
-  // 5. Preparação dos Dados (Traduzindo com as suas constantes)
+  // 5. Preparar dados
   const transactionsData = transactions
     .map((t) => {
-      const tipo = TRANSACTION_TYPE_OPTIONS.find((opt) => opt.value === t.type)?.label || t.type;
-      const categoria = TRANSACTION_CATEGORY_LABELS[t.category] || t.category;
-      const metodoPagamento = TRANSACTION_PAYMENT_METHOD_LABELS[t.paymentMethod] || t.paymentMethod;
+      const tipo =
+        TRANSACTION_TYPE_OPTIONS.find((opt) => opt.value === t.type)
+          ?.label || t.type;
 
-      return `${t.date.toLocaleDateString("pt-BR")} | R$${t.amount} | Tipo: ${tipo} | Categoria: ${categoria} | Pagamento: ${metodoPagamento}`;
+      const categoria =
+        TRANSACTION_CATEGORY_LABELS[t.category] || t.category;
+
+      const metodoPagamento =
+        TRANSACTION_PAYMENT_METHOD_LABELS[t.paymentMethod] ||
+        t.paymentMethod;
+
+      return `${t.date.toLocaleDateString(
+        "pt-BR"
+      )} | R$${t.amount} | Tipo: ${tipo} | Categoria: ${categoria} | Pagamento: ${metodoPagamento}`;
     })
     .join("\n");
 
@@ -89,26 +102,50 @@ ${transactionsData}
 Por favor, crie um relatório financeiro com a seguinte estrutura exata:
 
 ### Resumo Executivo
-(Produza um balanço do mês focando em tópicos curtos: o saldo foi positivo, neutro ou negativo? Qual o impacto na saúde financeira?).
+(Faça um balanço direto do mês categorizando o cenário como Positivo, Alerta ou Crítico. Compare o volume de Receitas vs Despesas (entradas x saídas), e conclua se fechamos o mês no verde ou se a pessoa está queimando caixa).
 
-### Análise Detalhada de Despesas
-(Examine os gastos utilizando bullet points. Liste os limites e possíveis excessos de forma objetiva, técnica e muito fácil de ler).
+### Análise de Hábitos de Consumo
+(Descreva como e onde o dinheiro foi gasto. Agrupe as informações de forma perspicaz usando bullet points. Identifique a "maior despesa" e aponte eventuais exageros em categorias específicas como Alimentação, Transporte, Lazer, etc. Demonstre atenção aos detalhes dos dados fornecidos).
 
-### Recomendações Estratégicas
-(Liste exatamente 3 diretrizes financeiras estritamente personalizadas em formato de tópicos rápidos e diretos para aplicação prática).
+### Plano Estratégico e Recomendações
+(Baseado ESTRITAMENTE nos dados reais apresentados, forneça exatamente 3 diretrizes financeiras práticas e altamente personalizadas para o próximo mês. Proibido conselhos genéricos. Aponte exatamente o que deve mudar no comportamento do usuário face ao seu histórico de gastos).
 
 ### Considerações Finais
-(Conclua com apenas 1 parágrafo curto de reflexão madura sobre os próximos passos, direcionando-se a mim pelo meu nome).`;
+(1 parágrafo curto encerrando a análise de forma madura e construtiva, e dirigindo-se diretamente a mim pelo meu nome).`;
 
-  try {
-    // 6. Chamada para a IA gerar o conteúdo
-    const result = await model.generateContent(content);
-    const response = await result.response;
-    return response.text();
-  } catch (error) {
-    console.error("Erro na API do Gemini:", error);
-    throw new Error(
-      "Não foi possível gerar o relatório no momento. Tente novamente mais tarde."
-    );
+  // 6. Modelos atualizados com base na disponibilidade da conta
+  const recoveryModels = [
+    "gemini-3.1-flash-lite-preview",
+    "gemini-flash-latest", // Alias de segurança
+    "gemini-2.5-pro", // Última pro
+    "gemini-2.5-flash", // Modelo rápido padrão
+  ];
+
+  for (const modelName of recoveryModels) {
+    try {
+      console.log(`Tentando modelo: ${modelName}...`);
+
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        systemInstruction,
+      });
+
+      const result = await model.generateContent(content);
+      const text = result.response.text();
+
+      if (text) {
+        console.log(`✅ Relatório gerado com SUCESSO pelo modelo: ${modelName}`);
+        return text;
+      }
+    } catch (error: any) {
+      console.warn(
+        `⚠️ Erro no modelo ${modelName}:`,
+        error?.message || "Serviço indisponível ou limite alcançado"
+      );
+    }
   }
+
+  throw new Error(
+    "Não foi possível gerar o relatório no momento. Tente novamente mais tarde."
+  );
 };
