@@ -115,10 +115,8 @@ Por favor, crie um relatório financeiro com a seguinte estrutura exata:
 
   // 6. Modelos atualizados com base na disponibilidade da conta
   const recoveryModels = [
+    "gemini-flash-latest", 
     "gemini-3.1-flash-lite-preview",
-    "gemini-flash-latest", // Alias de segurança
-    "gemini-2.5-pro", // Última pro
-    "gemini-2.5-flash", // Modelo rápido padrão
   ];
 
   for (const modelName of recoveryModels) {
@@ -146,7 +144,17 @@ Por favor, crie um relatório financeiro com a seguinte estrutura exata:
     }
   }
 
-  throw new Error(
-    "Não foi possível gerar o relatório no momento. Tente novamente mais tarde."
-  );
+  return `### Resumo Executivo
+Os servidores de IA estão enfrentando alta demanda e não foi possível gerar seu relatório personalizado no momento.
+
+### Análise de Hábitos de Consumo
+Não foi possível analisar as suas transações automaticamente. Sugerimos revisar manualmente suas despesas deste mês, especialmente nas categorias onde você costuma gastar mais.
+
+### Plano Estratégico e Recomendações
+- Revise suas maiores despesas acompanhando os registros na tabela principal.
+- Tente equilibrar seu fluxo de caixa mantendo as despesas não essenciais sob controle.
+- Tente gerar o relatório novamente mais tarde para obter seus insights exclusivos.
+
+### Considerações Finais
+Nossos serviços de IA estão momentaneamente sobrecarregados, mas continuamos ao seu lado no monitoramento das suas finanças. Tente novamente mais tarde!`;
 };
